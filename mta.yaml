@@ -1,0 +1,42 @@
+ID: openSAPHANA5
+_schema-version: '2.0'
+description: openSAPHANA5 - GroupMH
+version: 0.0.1
+modules:
+  - name: web
+    type: html5
+    path: web
+    description: |
+      Web
+    requires:
+      - name: openSAPHANA5_mh-uaa
+  - name: core_db
+    type: hdb
+    path: core_db
+    requires:
+      - name: hdi_core_db
+        properties:
+          TARGET_CONTAINER: '~{hdi-container-name}'
+      - name: CrossSchemaService
+        group: SERVICE_REPLACEMENTS
+        properties:
+          key: hdi-sflight-service
+          service: '~{sflight-service-name}'
+resources:
+  - name: openSAPHANA5_mh-uaa
+    type: com.sap.xs.uaa-space
+    properties:
+      config-path: ./xs-security.json
+  - name: hdi_core_db
+    parameters:
+      config:
+        schema: OPENSAP_HANA5_MH
+    properties:
+      hdi-container-name: '${service-name}'
+    type: com.sap.xs.hdi-container
+  - name: CrossSchemaService
+    type: org.cloudfoundry.existing-service
+    properties:
+      sflight-service-name: '${service-name}'
+    parameters:
+      service-name: CROSS_SCHEMA_SFLIGHT_MH01
